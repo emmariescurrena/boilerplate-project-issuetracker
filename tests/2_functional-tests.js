@@ -165,7 +165,7 @@ suite('Functional Tests', function () {
             .send({ _id: valid_id, })
             .end((err, res) => {
                 assert.equal(res.status, 200);
-                assert.equal(res.body.error, "no updated field(s) sent");
+                assert.equal(res.body.error, "no update field(s) sent");
                 assert.equal(res.body._id, valid_id);
                 done();
             });

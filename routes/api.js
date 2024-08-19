@@ -89,7 +89,7 @@ module.exports = (app) => {
 
             if (!Object.keys(query).length) {
                 return res.json({
-                    error: 'no updated field(s) sent',
+                    error: 'no update field(s) sent',
                     _id: _id
                 });
             }
