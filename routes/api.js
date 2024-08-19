@@ -88,16 +88,26 @@ module.exports = (app) => {
             let query = populateObject(req.body, keys);
 
             if (!Object.keys(query).length) {
-                return res.json({ error: 'no updated field(s) sent' });
+                return res.json({
+                    error: 'no updated field(s) sent',
+                    _id: _id
+                });
             }
 
-            Issue.findOneAndUpdate({ _id: _id }, query)
-                .then((_) => {
+            Issue.findById(_id)
+                .then((issue) => {
+                    if (!issue) {
+                        throw 'issue not found ' + _id
+                    }
+                    issue = populateObject(query, keys, issue);
+                    return issue.save();
+                })
+                .then((savedIssue) => {
                     res.json({
                         result: 'successfully updated',
                         _id: _id
                     });
-                }).catch((_) => {
+                }).catch((err) => {
                     res.json({
                         error: 'could not update',
                         _id: _id
@@ -113,13 +123,16 @@ module.exports = (app) => {
             _id = ObjectId.createFromHexString(_id);
 
 
-            Issue.findOneAndDelete({ _id: _id })
-                .then((_) => {
+            Issue.findByIdAndDelete(_id)
+                .then((issue) => {
+                    if (!issue) {
+                        throw 'issue not found ' + _id
+                    }
                     res.json({
                         result: 'successfully deleted',
                         _id: _id
                     });
-                }).catch((_) => {
+                }).catch((err) => {
                     res.json({
                         error: 'could not delete',
                         _id: _id
